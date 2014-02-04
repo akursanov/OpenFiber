@@ -3,3 +3,82 @@ PROJECT(OpenFiber)
 # Минимальная требуемая версия CMake
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
+
+# Некоторые макросы и функции Cmake
+
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake/common.cmake)
+
+SET(SNAPSHOT ON)
+
+SET(VERSION_MAJOR 0)
+SET(VERSION_MINOR 0)
+SET(VERSION_PATCH 0)
+
+IF(SNAPSHOT)
+    TRY_RUN(DATE_RUN DATE_COMPILE
+            ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/date.c
+            RUN_OUTPUT_VARIABLE DATE)
+
+    SET(VERSION ${DATE})
+ELSE()
+    SET(VERSION ${VERSION_MAJOR}.${VERSION_MINOR})
+
+    IF(NOT ${VERSION_PATCH} EQUAL 0)
+        SET(VERSION ${VERSION}.${VERSION_PATCH})
+    ENDIF()
+ENDIF()
+
+FILE(WRITE ${CMAKE_BINARY_DIR}/version.txt ${VERSION})
+
+# Файлы, которые составляют GUI версию  OpenFiber
+
+SET(SOURCES
+
+)
+
+SET(HEADERS_MOC
+
+)
+
+SET(UIS
+
+)
+
+SET(RESOURCES
+
+)
+
+# Подключаемые директории
+
+INCLUDE_DIRECTORIES(
+
+)
+
+# Сборка GUI версии OpenFiber
+
+QT5_WRAP_CPP(SOURCES_MOC ${HEADERS_MOC})
+QT5_WRAP_UI(SOURCES_UIS ${UIS})
+QT5_ADD_RESOURCES(SOURCES_RCS ${RESOURCES})
+
+ADD_EXECUTABLE(${PROJECT_NAME} WIN32
+    ${SOURCES}
+    ${SOURCES_MOC}
+    ${SOURCES_UIS}
+    ${SOURCES_RCS}
+)
+
+
+SET(QT_MODULES_EXTRAS)
+
+
+QT5_USE_MODULES(${PROJECT_NAME}
+    ${QT_MODULES_EXTRAS}
+    Concurrent
+    Help
+    Network
+    PrintSupport
+    Svg
+    WebKitWidgets
+    Widgets
+    Xml
+)

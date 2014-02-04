@@ -8,6 +8,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake/common.cmake)
 
+# Инициализация проекта
+
+INITIALISE_PROJECT()
+
+# Версия OpenFiber
+
 SET(SNAPSHOT ON)
 
 SET(VERSION_MAJOR 0)
@@ -34,13 +40,23 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/version.txt ${VERSION})
 
 SET(SOURCES
 
+    # main
+    src/main.cpp
+    src/mainwindow.cpp
+
 )
 
 SET(HEADERS_MOC
 
+    # main
+    src/mainwindow.h
+
 )
 
 SET(UIS
+
+    # main
+    src/mainwindow.ui
 
 )
 
@@ -81,4 +97,18 @@ QT5_USE_MODULES(${PROJECT_NAME}
     WebKitWidgets
     Widgets
     Xml
+)
+
+IF(WIN32)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+        ${Qt5Core_QTMAIN_LIBRARIES}
+    )
+ENDIF()
+
+# Дополнительные параметры настройки компилятора и компоновщика
+
+ADD_DEFINITIONS(-D${PROJECT_NAME}_MAIN)
+
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
+    LINK_FLAGS "${LINK_FLAGS_PROPERTIES}"
 )
